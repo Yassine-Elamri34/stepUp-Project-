@@ -17,7 +17,7 @@ function reverseString(inputString) {
 }
 
 // --- Example Usage ---
-const original = "Hello fsgjasakbhjwdhjsdssacWorld!";
+const original = "Hello fsgjasadskbhjwdhjsdssacWorld!";
 const reversed = reverseString(original);
 
 console.log(`Original: ${original}`);

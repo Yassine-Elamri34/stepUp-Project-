@@ -21,4 +21,4 @@ const original = "Hellosg fsgjasasdfsadskbhjwdhjsdssacWorld!";
 const reversed = reverseString(original);
 
 console.log(`Original: ${original}`);
-console.log(`Reversed: ${reversed}`); // Outpust: !dlroW olleH
+console.log(`Reversed: ${reversed}`); // Outpuhst: !dlroW olleH

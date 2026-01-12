@@ -7,7 +7,7 @@ function reverseString(inputString) {
   // 1. Split the string into an array of individual characters
   const charArray = inputString.split('');
 
-  // 2. Reverse the order of the elements in the array
+  // 2. Reverse,  the order of the elements in the array
   const reversedArray = charArray.reverse();
 
   // 3. Join the elements of the array back into a single string
@@ -17,7 +17,7 @@ function reverseString(inputString) {
 }
 
 // --- Example Usage ---
-const original = "Hellosdg fsgjagvdsffhkoojsasdfsadskbhjwdhjsdssacWorld!";
+const original = "Hello cWorld!";
 const reversed = reverseString(original);
 
 console.log(`Original: ${original}`);

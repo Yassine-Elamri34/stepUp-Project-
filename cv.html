@@ -2,34 +2,561 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My szvddsFiracsst Page</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>The Overthinking Website</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b1020;
+      color: #e8ecff;
+      overflow-x: hidden;
+    }
+
+    /* ===== Top Bar ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11, 16, 32, 0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #7c3aed;
+      box-shadow: 0 0 16px rgba(124,58,237,0.6);
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0;
+      letter-spacing: 0.4px;
+    }
+    .sub {
+      font-size: 12px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button, select {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: #e8ecff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform .08s ease, background .2s ease, border .2s ease;
+      font-size: 13px;
+    }
+    button:hover, select:hover {
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(255,255,255,0.22);
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* ===== Layout ===== */
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px 18px 60px;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    /* ===== Main area ===== */
+    .hero {
+      padding: 18px;
+      border-radius: 16px;
+      background: radial-gradient(1200px 400px at 20% 0%, rgba(124,58,237,0.25), transparent 65%),
+                  radial-gradient(1000px 500px at 90% 30%, rgba(59,130,246,0.18), transparent 60%),
+                  rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.10);
+      margin-bottom: 14px;
+    }
+    .hero h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .hero p {
+      margin: 0;
+      opacity: 0.85;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 280px;
+      border-radius: 16px;
+      border: 1px dashed rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.18);
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .stage .hint {
+      opacity: 0.85;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .danger {
+      border-color: rgba(239,68,68,0.25);
+    }
+
+    .banner {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      font-size: 12px;
+      opacity: 0.8;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      max-width: 320px;
+    }
+
+    /* Floating thought bubble */
+    .bubble {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(124,58,237,0.16);
+      border: 1px solid rgba(124,58,237,0.35);
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+      max-width: 420px;
+      pointer-events: none;
+    }
+    .bubble.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== Sidebar (Console) ===== */
+    .consoleHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .consoleHead h3 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      opacity: 0.95;
+    }
+    .pill {
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      opacity: 0.9;
+    }
+
+    .log {
+      height: 420px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+    .line {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 10px 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+      opacity: 0.75;
+      font-size: 11px;
+    }
+    .tag {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.25);
+      font-size: 11px;
+    }
+    .tag.warn {
+      background: rgba(245,158,11,0.15);
+      border-color: rgba(245,158,11,0.25);
+    }
+    .tag.crit {
+      background: rgba(239,68,68,0.14);
+      border-color: rgba(239,68,68,0.25);
+    }
+
+    /* Scrollbar nicer (optional) */
+    .log::-webkit-scrollbar { width: 10px; }
+    .log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 10px; }
+    .log::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+
+    /* Tiny footer note */
+    footer {
+      opacity: 0.7;
+      text-align: center;
+      padding: 18px 10px 26px;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Hello, world!</h1>
-  <p>This ihgdsgdjdchfghbddc msy fissdscrwqesdfxewasazssstsdv dxzHTML page.</p>
+<header>
+  <div class="brand">
+    <div class="dot"></div>
+    <div>
+      <h1>The Overthinking Website</h1>
+      <div class="sub">A dramatic UX analyzer for harmless user behavior</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <select id="modeSelect" aria-label="Overthinking level">
+      <option value="calm">Calm Mode</option>
+      <option value="normal" selected>Normal Mode</option>
+      <option value="panic">Panic Mode</option>
+    </select>
+    <button id="btnClear">Clear Logs</button>
+    <button id="btnChaos" class="danger">Trigger Overthinking</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- LEFT -->
+  <section class="card">
+    <div class="hero">
+      <h2>Welcome. Please behave normally.</h2>
+      <p>
+        This site will <b>over-analyze</b> every click, hover, scroll, and pause.
+        It’s like analytics… but with anxiety.
+      </p>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="bubble" id="bubble">Analyzing...</div>
+
+      <div class="hint">
+        Try: move your mouse, scroll, click on empty space, resize the window,
+        hover buttons, or stop moving for a few seconds.
+      </div>
+
+      <div class="actions">
+        <button id="btnSerious">Serious Button</button>
+        <button id="btnMaybe">Maybe Button</button>
+        <button id="btnNope" class="danger">Do Not Click</button>
+      </div>
+
+      <div class="banner" id="statusBanner">
+        Status: watching you politely.
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT -->
+  <aside class="card">
+    <div class="consoleHead">
+      <h3>Overthinking Console</h3>
+      <span class="pill" id="pill">mode: normal</span>
+    </div>
+    <div class="log" id="log"></div>
+  </aside>
+</main>
+
+<footer>
+  Tip: This is a front-end only project (HTML/CSS/JS). Perfect for a “Useless Website” pitch.
+</footer>
+
+<script>
+  // ===== Simple state =====
+  var mode = "normal"; // calm | normal | panic
+  var logEl = document.getElementById("log");
+  var bubble = document.getElementById("bubble");
+  var stage = document.getElementById("stage");
+  var banner = document.getElementById("statusBanner");
+  var pill = document.getElementById("pill");
+
+  var lastMoveTime = Date.now();
+  var lastScrollY = window.scrollY;
+  var lastActionTime = Date.now();
+  var messageCooldown = 0; // prevents spam
+
+  // ===== Message banks (simple arrays) =====
+  var messages = {
+    calm: {
+      info: [
+        "Noted. Calm interaction detected.",
+        "Everything seems reasonable. For now.",
+        "User behavior is… acceptable."
+      ],
+      warn: [
+        "Slight hesitation detected. It's okay.",
+        "That hover was… thoughtful.",
+        "You scrolled with intention. Respect."
+      ],
+      crit: [
+        "Alright. That was a bold click.",
+        "Interesting choice. We'll allow it.",
+        "This is fine. Probably."
+      ]
+    },
+    normal: {
+      info: [
+        "Click registered. Was that intentional?",
+        "Mouse movement detected. Are you searching for meaning?",
+        "User is exploring. I feel observed."
+      ],
+      warn: [
+        "Hover detected. Commitment issues possible.",
+        "You paused for 3 seconds. Overthinking confirmed.",
+        "Aggressive scrolling detected. Are we in a hurry?"
+      ],
+      crit: [
+        "Do not click that. You clicked it.",
+        "Window resized. Responsive design is now emotionally unstable.",
+        "You clicked empty space. That's… a decision."
+      ]
+    },
+    panic: {
+      info: [
+        "I am logging everything. EVERYTHING.",
+        "Stop moving the mouse like that. It's too powerful.",
+        "Your cursor has confidence. Suspicious."
+      ],
+      warn: [
+        "Rapid scrolling! The pixels are terrified!",
+        "Hovering again?! Are you okay?!",
+        "You paused… the site is imagining worst-case scenarios."
+      ],
+      crit: [
+        "YOU CLICKED. THE SYSTEM HAS FEELINGS.",
+        "Resizing the window broke my spirit.",
+        "Empty click detected. The void clicked back."
+      ]
+    }
+  };
+
+  function nowTime() {
+    var d = new Date();
+    var hh = String(d.getHours()).padStart(2, "0");
+    var mm = String(d.getMinutes()).padStart(2, "0");
+    var ss = String(d.getSeconds()).padStart(2, "0");
+    return hh + ":" + mm + ":" + ss;
+  }
+
+  function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function tagTypeToLabel(type) {
+    if (type === "warn") return "warning";
+    if (type === "crit") return "critical";
+    return "info";
+  }
+
+  function setBanner(text) {
+    banner.textContent = "Status: " + text;
+  }
+
+  function showBubble(text) {
+    bubble.textContent = text;
+    bubble.classList.add("show");
+    clearTimeout(showBubble._t);
+    showBubble._t = setTimeout(function() {
+      bubble.classList.remove("show");
+    }, 1200);
+  }
+
+  function addLog(type, text) {
+    // small anti-spam cooldown (simple)
+    var t = Date.now();
+    if (t < messageCooldown) return;
+    messageCooldown = t + (mode === "panic" ? 250 : 450);
+
+    var line = document.createElement("div");
+    line.className = "line";
+
+    var meta = document.createElement("div");
+    meta.className = "meta";
+
+    var left = document.createElement("div");
+    left.textContent = nowTime();
+
+    var right = document.createElement("span");
+    right.className = "tag" + (type === "warn" ? " warn" : type === "crit" ? " crit" : "");
+    right.textContent = tagTypeToLabel(type);
+
+    meta.appendChild(left);
+    meta.appendChild(right);
+
+    var msg = document.createElement("div");
+    msg.textContent = text;
+
+    line.appendChild(meta);
+    line.appendChild(msg);
+
+    logEl.insertBefore(line, logEl.firstChild);
+
+    showBubble(text);
+    setBanner("analyzing… " + tagTypeToLabel(type));
+    lastActionTime = Date.now();
+  }
+
+  function react(typeHint) {
+    var bank = messages[mode];
+    var type = typeHint || "info";
+    var text = pick(bank[type]);
+    addLog(type, text);
+  }
+
+  // ===== Mode handling =====
+  document.getElementById("modeSelect").onchange = function() {
+    mode = this.value;
+    pill.textContent = "mode: " + mode;
+    react("info");
+  };
+
+  // ===== Buttons =====
+  document.getElementById("btnClear").onclick = function() {
+    logEl.innerHTML = "";
+    setBanner("logs erased. evidence destroyed.");
+    showBubble("Logs cleared. Nothing happened.");
+  };
+
+  document.getElementById("btnChaos").onclick = function() {
+    react("crit");
+    react("warn");
+    react("info");
+  };
+
+  document.getElementById("btnSerious").onclick = function() {
+    react("info");
+  };
+  document.getElementById("btnMaybe").onclick = function() {
+    react("warn");
+  };
+  document.getElementById("btnNope").onclick = function() {
+    react("crit");
+  };
+
+  // ===== Global behavior tracking =====
+  document.addEventListener("click", function(e) {
+    // Clicking empty stage area (not buttons)
+    var clickedButton = e.target.tagName.toLowerCase() === "button";
+    if (!clickedButton) {
+      // If user clicked in the stage area, be dramatic
+      if (stage.contains(e.target)) react("crit");
+      else react("info");
+    }
+  });
+
+  document.addEventListener("mousemove", function() {
+    lastMoveTime = Date.now();
+    // light touch: don’t spam logs on every move
+  });
+
+  document.addEventListener("mouseover", function(e) {
+    if (e.target.tagName && e.target.tagName.toLowerCase() === "button") {
+      react("warn");
+    }
+  });
+
+  window.addEventListener("scroll", function() {
+    var y = window.scrollY;
+    var diff = Math.abs(y - lastScrollY);
+    lastScrollY = y;
+
+    if (diff > 120) react("warn");
+    else react("info");
+  });
+
+  window.addEventListener("resize", function() {
+    react("crit");
+  });
+
+  // ===== Inactivity detector =====
+  setInterval(function() {
+    var now = Date.now();
+    var idleMs = now - lastMoveTime;
+
+    // if user is idle for 4 seconds, react
+    if (idleMs > 4000) {
+      // reset so it doesn't repeat constantly
+      lastMoveTime = now;
+      react("warn");
+    }
+
+    // if no recent action, calm banner
+    if (now - lastActionTime > 3000) {
+      setBanner("watching you politely.");
+    }
+  }, 700);
+
+  // ===== Initial greeting =====
+  react("info");
+</script>
 
 </body>
 </html>
-
-<!-- git init                     1 -->
-
-
-
-
-<!-- git add .
-git commit -m "Inistial commit"
-git regmote add origin https://github.com/Yassine-Elamri34/stepUp-Project- -->
-
-
-<!-- git add .                            2
-git commit -m "first commit" -->
-
-
-<!-- git branch -M main                           3
-git push -u sofrigjnin main                       4 -->
-
-
 
 
 <!-- hedthi  -->

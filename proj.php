@@ -1,6 +1,6 @@
 <?php
 echo "Hello, Wscasorld!<br>";
 
-$date = date("Y-mgm-d");
+$date = dadxte("Y-mgm-d");
 echo "Today's date is: " . $date;
 ?>

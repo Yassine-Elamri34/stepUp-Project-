@@ -2,163 +2,150 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Scroll Judge</title>
+  <title>Hover Shape Detector</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f9fafb;
-      color: #111827;
-      line-height: 1.6;
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
 
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background: #111827;
-      color: #fff;
-      padding: 14px 20px;
-      z-index: 10;
+    .container {
+      display: flex;
+      gap: 40px;
+      align-items: center;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 18px;
+    .shape-area {
+      width: 240px;
+      height: 240px;
+      border: 2px dashed #38bdf8;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: crosshair;
     }
 
-    main {
-      margin-top: 80px;
-      padding: 20px;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+    .shape {
+      width: 160px;
+      height: 160px;
+      background: #38bdf8;
     }
 
-    section {
-      margin-bottom: 600px;
+    .circle { border-radius: 50%; }
+
+    .square { border-radius: 0; }
+
+    .panel {
+      width: 280px;
+      background: #020617;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 16px;
     }
 
-    .judge-box {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #ffffff;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 14px 16px;
-      max-width: 260px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      font-size: 14px;
+    .panel h2 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #38bdf8;
     }
 
-    .judge-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-      color: #2563eb;
+    .result {
+      font-size: 15px;
+      margin-top: 10px;
+      min-height: 40px;
     }
 
-    footer {
-      height: 800px;
-      padding: 40px;
-      text-align: center;
-      color: #6b7280;
+    .hint {
+      font-size: 13px;
+      color: #94a3b8;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>The Website That Judges Your Scrolling</h1>
-</header>
+<div class="container">
+  <div class="shape-area" id="shapeArea">
+    <!-- Change class to test -->
+    <div class="shape circle" id="shape"></div>
+  </div>
 
-<main>
-  <section>
-    <h2>Welcome</h2>
-    <p>
-      This website does absolutely nothing useful.
-      It only watches how you scroll and judges you for it.
-    </p>
-    <p>Scroll normally. Or don’t. We’re watching.</p>
-  </section>
-
-  <section>
-    <h2>Still scrolling?</h2>
-    <p>
-      Interesting choice. Many users stop by now.
-    </p>
-  </section>
-
-  <section>
-    <h2>You’re committed</h2>
-    <p>
-      Few people reach this point.
-      That says something about you.
-    </p>
-  </section>
-</main>
-
-<footer>
-  You reached the bottom. Congratulations. Or concern.
-</footer>
-
-<div class="judge-box" id="judgeBox">
-  <div class="judge-title">Scroll Judge</div>
-  <div id="judgeMessage">Waiting for movement…</div>
+  <div class="panel">
+    <h2>Shape Analysis</h2>
+    <div class="hint">
+      Hover your mouse around the shape for a few seconds.<br>
+      Move naturally.
+    </div>
+    <div class="result" id="result">
+      Waiting for hover data…
+    </div>
+  </div>
 </div>
 
 <script>
-  var lastScrollTop = 0;
-  var lastScrollTime = Date.now();
-  var messageEl = document.getElementById("judgeMessage");
+  var shapeArea = document.getElementById("shapeArea");
+  var resultEl = document.getElementById("result");
 
-  function judgeScroll(speed, direction) {
-    if (speed < 20) {
-      return "Slow scrolling detected. Careful reader or overthinker?";
-    }
+  var points = [];
+  var lastAngle = null;
+  var sharpTurns = 0;
 
-    if (speed >= 20 && speed < 80) {
-      return "Normal scrolling. You seem balanced. For now.";
-    }
-
-    if (speed >= 80) {
-      return "Fast scrolling! Skimming detected. Confidence or impatience?";
-    }
-
-    if (direction === "up") {
-      return "Scrolling up? Regret detected.";
-    }
-
-    return "Scrolling behavior unclear. Suspicious.";
+  function angleBetween(dx, dy) {
+    return Math.atan2(dy, dx) * (180 / Math.PI);
   }
 
-  window.addEventListener("scroll", function () {
-    var currentScroll = window.scrollY;
-    var now = Date.now();
+  shapeArea.addEventListener("mousemove", function (e) {
+    var rect = shapeArea.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
 
-    var distance = Math.abs(currentScroll - lastScrollTop);
-    var timeDiff = now - lastScrollTime;
-    var speed = distance / timeDiff * 100;
+    if (points.length > 0) {
+      var prev = points[points.length - 1];
+      var dx = x - prev.x;
+      var dy = y - prev.y;
 
-    var direction = currentScroll > lastScrollTop ? "down" : "up";
+      var angle = angleBetween(dx, dy);
 
-    var message = judgeScroll(speed, direction);
-    messageEl.textContent = message;
+      if (lastAngle !== null) {
+        var diff = Math.abs(angle - lastAngle);
+        if (diff > 60) sharpTurns++;
+      }
 
-    lastScrollTop = currentScroll;
-    lastScrollTime = now;
+      lastAngle = angle;
+    }
+
+    points.push({ x: x, y: y });
   });
 
-  // Stop scrolling judgment
-  setInterval(function () {
-    var idleTime = Date.now() - lastScrollTime;
-    if (idleTime > 2500) {
-      messageEl.textContent = "You stopped scrolling. Lost in thought?";
+  shapeArea.addEventListener("mouseleave", function () {
+    analyzeShape();
+    points = [];
+    sharpTurns = 0;
+    lastAngle = null;
+  });
+
+  function analyzeShape() {
+    if (points.length < 20) {
+      resultEl.textContent = "Not enough data. Try hovering longer.";
+      return;
     }
-  }, 1000);
+
+    if (sharpTurns > 25) {
+      resultEl.textContent = "Detected shape: SQUARE 🟥";
+    } else {
+      resultEl.textContent = "Detected shape: CIRCLE 🔵";
+    }
+  }
 </script>
 
 </body>

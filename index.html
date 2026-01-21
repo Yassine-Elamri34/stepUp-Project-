@@ -1,172 +1,50 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Gesture Guess Game</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  .app {
-    display: flex;
-    gap: 30px;
-  }
-
-  canvas {
-    background: white;
-    border-radius: 12px;
-    cursor: crosshair;
-  }
-
-  .panel {
-    width: 260px;
-    background: #020617;
-    border: 1px solid #1e293b;
-    border-radius: 12px;
-    padding: 16px;
-  }
-
-  button {
-    width: 100%;
-    margin-top: 8px;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: #1e293b;
-    color: white;
-    cursor: pointer;
-  }
-
-  .status {
-    min-height: 60px;
-    margin-top: 10px;
-  }
-</style>
+	<meta charset="utf-8">
+	<title>Lab Login</title>
+	<link rel="stylesheet" href="lab2.css" type="text/css">
 </head>
-
 <body>
+<main>
+	<h1>Login Page</h1>
+	<div>
+<!--==== LOGIN FORM BLOCK ====-->
 
-<div class="app">
-  <canvas id="canvas" width="260" height="260"></canvas>
+<form class="login">
+<fieldset class="login__fieldset">
+<legend>User Authentication</legend>
+<label class="login__label">
+	Username:
+	<input type="text" class="login__txtbox">
+</label>
+<br><br>
 
-  <div class="panel">
-    <h3>Draw a gesture</h3>
-    <p>Try: line, circle, zigzag</p>
+<label class="login__label">
+Password:
+<input type="password" class="login__txtbox">
+</label>
 
-    <div class="status" id="status">Draw inside the box</div>
+<input type="submit" value="Log in" class="login__button">
 
-    <button id="yesBtn" disabled>Yes</button>
-    <button id="noBtn" disabled>No</button>
-  </div>
-</div>
+</fieldset>
 
-<script>
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  const statusEl = document.getElementById("status");
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
+</form>
 
-  let drawing = false;
-  let points = [];
-  let attempts = 0;
-  let guess = "";
+	</div>
 
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
+<!--==== OUTPUT BLOCK ====-->	
+	<div class="output">
+		<p>Username: 
+			<span class="output__text output__user"></span>
+		</p>
+		<p>Password: 
+			<span class="output__text output__pass"></span>
+		</p>
+	</div><!--END output BLOCK-->
+</main>
 
-  canvas.onmousedown = e => {
-    drawing = true;
-    points = [];
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-    points.push({x:e.offsetX, y:e.offsetY});
-  };
-
-  canvas.onmousemove = e => {
-    if (!drawing) return;
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-    points.push({x:e.offsetX, y:e.offsetY});
-  };
-
-  canvas.onmouseup = finish;
-  canvas.onmouseleave = finish;
-
-  function finish() {
-    if (!drawing) return;
-    drawing = false;
-    analyze();
-  }
-
-  function analyze() {
-    if (points.length < 10) {
-      statusEl.textContent = "Draw more clearly.";
-      return;
-    }
-
-    const start = points[0];
-    const end = points[points.length - 1];
-
-    const dx = Math.abs(end.x - start.x);
-    const dy = Math.abs(end.y - start.y);
-
-    let directionChanges = 0;
-    for (let i = 2; i < points.length; i++) {
-      const dx1 = points[i-1].x - points[i-2].x;
-      const dy1 = points[i-1].y - points[i-2].y;
-      const dx2 = points[i].x - points[i-1].x;
-      const dy2 = points[i].y - points[i-1].y;
-      if (dx1 * dx2 + dy1 * dy2 < 0) directionChanges++;
-    }
-
-    if (dx > dy * 2) guess = "Horizontal line";
-    else if (dy > dx * 2) guess = "Vertical line";
-    else if (directionChanges > 10) guess = "Zigzag";
-    else if (distance(start, end) < 30) guess = "Circle-like shape";
-    else guess = "Unknown gesture";
-
-    statusEl.textContent = "I think you drew: " + guess;
-    yesBtn.disabled = false;
-    noBtn.disabled = false;
-  }
-
-  function distance(a,b){
-    return Math.hypot(a.x-b.x, a.y-b.y);
-  }
-
-  yesBtn.onclick = () => {
-    statusEl.textContent = "😎 I knew it!";
-    reset();
-  };
-
-  noBtn.onclick = () => {
-    attempts++;
-    if (attempts >= 3) {
-      statusEl.textContent = "❌ I don’t wanft to play with you.";
-      canvas.style.pointerEvents = "none";
-    } else {
-      statusEl.textContent = "Hmm… trey again.";
-      reset();
-    }
-  };
-
-  function reset() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    yesBtn.disabled = true;
-    noBtn.disabled = true;
-  }
-</script>
-
+	<script src="script.js"></script>
 </body>
 </html>
 
@@ -174,7 +52,7 @@
 <!-- heddthdi  -->
 <!-- 
 git add .
-git commit -m "2"
+git commit -m "Lab 2"
 git branch -M main
 git push -u origin main -->
 

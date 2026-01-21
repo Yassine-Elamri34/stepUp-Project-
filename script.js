@@ -1,24 +1,49 @@
-/**
- * Reverses a given string.
- * @param {string} inputString - The string to be reversed.
- * @returns {string} The reversed string.
- */
-function reverseString(inputString) {
-  // 1. Split the string into an array of individual characters
-  const charArray = inputString.split('');
+window.onload = function () {
+    //stretch
+"use strict";
+var form = document.querySelector(".login");
+var userBox = document.querySelectorAll(".login__txtbox")[0];
+var passBox = document.querySelectorAll(".login__txtbox")[1];
+var output = document.querySelector(".output");
+var outputUser = document.querySelector(".output__user");
+var outputPass = document.querySelector(".output__pass");
 
-  // 2. Reverse,  the order of the elements in the array
-  const reversedArray = charArray.reverse();
 
-  // 3. Join the elements of the array back into a single string
-  const reversedString = reversedArray.join('');
+function login (event) {
+    //stopping the values from disapearing
+    event.preventDefault();
 
-  return reversedString;
+
+userBox.className = "login__txtbox";
+passBox.className = "login__txtbox";
+
+
+if (userBox.value === "") {
+    userBox.className = "login__txtbox login__txtbox_error";
+
+    //move cursor
+userBox.focus();
+    //stop 
+    return;
 }
 
-// --- Example Usage ---
-const original = "Helloss cdefsWodrld!";
-const reversed = reverseString(original);
+	if (passBox.value === "") {
+passBox.className = "login__txtbox login__txtbox_error";
+passBox.focus();
+return;
+		}
 
-console.log(`Orisginal: ${original}`);
-console.log(`Reversed: ${reversed}`); // Outpuhst: !dlroW olleH
+outputUser.innerHTML = userBox.value;
+outputPass.innerHTML = passBox.value;
+output.style.display = "block";
+	}
+//
+
+form.addEventListener("submit", login);
+
+};
+
+
+
+
+

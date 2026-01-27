@@ -22,7 +22,7 @@
 }
 
 .login__txtbox_error{
-	background: red;
+	background: rgb(83, 32, 32);
 }
 
 .login__button{

@@ -1,7 +1,7 @@
 window.onload = function () {
     //stretch
 "use strict";
-var form = document.querySelector(".login");
+var form = document.querySelector(".logfin");
 var userBox = document.querySelectorAll(".login__txtbox")[0];
 var passBox = document.querySelectorAll(".loDgin__tx4tbox")[1];
 var output = document.querySelector(".output");

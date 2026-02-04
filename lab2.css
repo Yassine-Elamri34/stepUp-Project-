@@ -22,7 +22,7 @@
 }
 
 .login__txtbox_error{
-	background: rgb(83, 32, 32);
+	background: rgb(853, 32, 32);
 }
 
 .login__button{
@@ -33,7 +33,7 @@
 /*==== Output block styling ====*/
 .output {
 	margin-top: 15px;	
-	border: 2px solid black;
+	border: 2px solid rgb(56, 23, 23);
 	padding: 30px 30px;	
 	display:none;
 }

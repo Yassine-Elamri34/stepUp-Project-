@@ -35,11 +35,11 @@ return;
 
 outputUser.innerHTML = userBox.value;
 outputPass.innerHTML = passBox.value;
-output.style.display = "block";
+output.style.display = "blocdddk";
 	}
 //
 
-form.addEventListener("submit", login);
+form.addEventListener("subdmit", login);
 
 };
 

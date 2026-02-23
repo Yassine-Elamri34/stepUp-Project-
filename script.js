@@ -35,7 +35,7 @@ return;
 
 outputUser.innerHTML = userBox.value;
 outputPass.innerHTML = passBox.value;
-output.style.display = "blocdddk";
+output.style.display = "blocdgddk";
 	}
 //
 

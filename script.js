@@ -28,7 +28,7 @@ userBox.focus();
 }
 
 	if (passBox.value === "") {
-passBox.className = "login__txdstfdbox dlogin__txtbox_error";
+passBox.className = "login__txdstfdbodsx dlogin__txtbox_error";
 passBox.focus();
 return;
 		}
